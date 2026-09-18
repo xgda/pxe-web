@@ -1,12 +1,12 @@
 # PXE Web Console
 
-¸ø Linux PXE ×°»ú·şÎñÆ÷ÓÃµÄÇáÁ¿¹ÜÀíÃæ°å£º**µÇÂ¼ ¡ú ½ÚµãĞÅÏ¢£¨±í¸ñ£©¡ú ÍøÒ³ SSH ÖÕ¶Ë ¡ú Ğ´»Ø dhcpd ÅäÖÃ**¡£
+ç»™ Linux PXE è£…æœºæœåŠ¡å™¨ç”¨çš„è½»é‡ç®¡ç†é¢æ¿ï¼š**ç™»å½• â†’ èŠ‚ç‚¹ä¿¡æ¯ï¼ˆè¡¨æ ¼ï¼‰â†’ ç½‘é¡µ SSH ç»ˆç«¯ â†’ å†™å› dhcpd é…ç½®**ã€‚
 
-¼¼ÊõÕ»£ººó¶Ë FastAPI + paramiko£¬Ç°¶Ë Vue3 + Element Plus£¨CDN£¬ÎŞĞè npm ´ò°ü£©¡£
+æŠ€æœ¯æ ˆï¼šåç«¯ FastAPI + paramikoï¼Œå‰ç«¯ Vue3 + Element Plusï¼ˆCDNï¼Œæ— éœ€ npm æ‰“åŒ…ï¼‰ã€‚
 
 
 
-## 1. ·Åµ½·şÎñÆ÷ÉÏ
+## 1. æ”¾åˆ°æœåŠ¡å™¨ä¸Š
 
 ```bash
 sudo mkdir -p /opt/pxe-web
@@ -14,10 +14,10 @@ sudo cp -r pxe-web/* /opt/pxe-web/
 cd /opt/pxe-web
 
 
-Ç°ÌáÒÀÀµÉèÖÃ
+å‰æä¾èµ–è®¾ç½®
 sudo apt install -y nginx wget isc-dhcp-server tftpd-hpa
 
-1.1¡¢ĞŞ¸Ätftp´æ´¢ÎÄ¼ş¼Ğ£¬Ö¸Ïò/opt/pxe-web/tftpboot/
+1.1ã€ä¿®æ”¹tftpå­˜å‚¨æ–‡ä»¶å¤¹ï¼ŒæŒ‡å‘/opt/pxe-web/tftpboot/
 # cat /etc/default/tftpd-hpa
 
 TFTP_USERNAME="tftp"
@@ -29,33 +29,36 @@ TFTP_OPTIONS="--secure --verbose"
 sudo systemctl enable tftpd-hpa.service
 sudo systemctl status tftpd-hpa.service
 
-1.2¡¢ĞŞ¸Änginx¸ùÎÄ¼ş¼Ğ£¬Ö¸Ïò/opt/pxe-web/var/www/html
+1.2ã€ä¿®æ”¹nginxæ ¹æ–‡ä»¶å¤¹ï¼ŒæŒ‡å‘/opt/pxe-web/var/www/html
 ```bash
-# 1) ÏÈ¸Éµô Ubuntu ×Ô´øµÄÄ¬ÈÏÕ¾µã ¡ª¡ª ËüÒ²Õ¼ÁË 80 ¶Ë¿ÚµÄ default_server£¬
-#    ²»É¾µÄ»°ÏÂÒ»²½»á±¨ "a duplicate default server for 0.0.0.0:80"
+# 1) å…ˆå¹²æ‰ Ubuntu è‡ªå¸¦çš„é»˜è®¤ç«™ç‚¹ â€”â€” å®ƒä¹Ÿå äº† 80 ç«¯å£çš„ default_serverï¼Œ
+#    ä¸åˆ çš„è¯ä¸‹ä¸€æ­¥ä¼šæŠ¥ "a duplicate default server for 0.0.0.0:80"
 sudo rm -f /etc/nginx/sites-enabled/default
 
-# 2) ¿½ÅäÖÃ
+# 2) æ‹·é…ç½®
 sudo cp deploy/nginx/pxe-web.conf       /etc/nginx/conf.d/
 sudo cp deploy/nginx/sysctl-90-pxe.conf /etc/sysctl.d/90-pxe.conf
 sudo sysctl --system
 
-# 3) ¼ì²é²¢ÉúĞ§
+# 3) æ£€æŸ¥å¹¶ç”Ÿæ•ˆ
 sudo nginx -t && sudo systemctl reload nginx
 sudo systemctl enable nginx.service
 sudo systemctl status nginx.service
 ```
 
-¸ùÄ¿Â¼ÒÑ¾­ÔÚ `pxe-web.conf` ÀïĞ´ËÀ³É `/opt/pxe-web/var/www/html`£¬ÓëÆ½Ì¨µÄ
-`PXE_WWW_ROOT` / `PXE_IMAGES_DIR` Ä¬ÈÏÖµÒ»ÖÂ¡£Ïë¸ÄÖ»¸ÄÄÇÒ»ĞĞµÄ `root`¡£
+æ ¹ç›®å½•å·²ç»åœ¨ `pxe-web.conf` é‡Œå†™æ­»æˆ `/opt/pxe-web/var/www/html`ï¼Œä¸å¹³å°çš„
+`PXE_WWW_ROOT` / `PXE_IMAGES_DIR` é»˜è®¤å€¼ä¸€è‡´ã€‚æƒ³æ”¹åªæ”¹é‚£ä¸€è¡Œçš„ `root`ã€‚
 
-1.3¡¢´´½¨hosts.confÎÄ¼ş
+1.3ã€åˆ›å»ºhosts.confæ–‡ä»¶
+```bash
 # sudo mkdir /etc/dhcp/hosts 
 # sudo touch /etc/dhcp/hosts.conf
+```
 
-1.4¡¢ĞŞ¸Äisc-dhcp-serverÅäÖÃÎÄ¼ş 
+1.4ã€ä¿®æ”¹isc-dhcp-serveré…ç½®æ–‡ä»¶ 
+```bash
 # mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.back
-# vim /etc/dhcp/dhcpd.conf£¬Ìí¼ÓÒÔÏÂÄÚÈİ£¬µØÖ·µÈĞÅÏ¢¸ù¾İĞèÇóĞŞ¸Ä
+# vim /etc/dhcp/dhcpd.confï¼Œæ·»åŠ ä»¥ä¸‹å†…å®¹ï¼Œåœ°å€ç­‰ä¿¡æ¯æ ¹æ®éœ€æ±‚ä¿®æ”¹
 option domain-name "example.org";
 option domain-name-servers ns1.example.org, ns2.example.org;
 
@@ -69,11 +72,11 @@ max-lease-time 7200;
 ddns-update-style none;
 
 option arch code 93 = unsigned integer 16;
-# ========== iPXE ×Ô¶¨ÒåÑ¡ÏîÉùÃ÷ ==========
+# ========== iPXE è‡ªå®šä¹‰é€‰é¡¹å£°æ˜ ==========
 option ipxe-menu-item code 224  = text;
 #option grub-menu-item code 225  = text;
 
-# ========= ÒıÈëÍâ²¿Ó³ÉäÎÄ¼ş =========
+# ========= å¼•å…¥å¤–éƒ¨æ˜ å°„æ–‡ä»¶ =========
 include "/etc/dhcp/hosts.conf";
 
 subnet 192.168.1.0 netmask 255.255.255.0 {
@@ -89,7 +92,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
     next-server 192.168.1.110;
     append dhcp-parameter-request-list 224;
 
-    # ========= PXE ÅäÖÃ =========
+    # ========= PXE é…ç½® =========
     class "pxeclients" {
         match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
 
@@ -115,7 +118,7 @@ sudo systemctl status isc-dhcp-server
 
 ```
 
-## 2. °²×°ÒÀÀµ²¢ÊÔÔËĞĞ
+## 2. å®‰è£…ä¾èµ–å¹¶è¯•è¿è¡Œ
 
 ```bash
 cd /opt/pxe-web
@@ -123,13 +126,13 @@ python3 -m venv /opt/pxe-web/venv
 /opt/pxe-web/venv/bin/pip install -r /opt/pxe-web/requirements.txt
 /opt/pxe-web/venv/bin/pip install uvicorn[standard]
 
-# ÒÔ root ÔËĞĞ£¨ĞèÒª¶Á /etc/dhcp¡¢Ö´ĞĞ dhcpd -t Óë systemctl reload£©
+# ä»¥ root è¿è¡Œï¼ˆéœ€è¦è¯» /etc/dhcpã€æ‰§è¡Œ dhcpd -t ä¸ systemctl reloadï¼‰
 sudo /opt/pxe-web/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 
-ä¯ÀÀÆ÷´ò¿ª `http://<·şÎñÆ÷IP>:8080`£¬ÓÃ `admin / admin` µÇÂ¼¡£
+æµè§ˆå™¨æ‰“å¼€ `http://<æœåŠ¡å™¨IP>:8080`ï¼Œç”¨ `admin / admin` ç™»å½•ã€‚
 
-## 3. ÅäÖÃ³ÉÏµÍ³·şÎñ
+## 3. é…ç½®æˆç³»ç»ŸæœåŠ¡
 
 ```bash
 sudo cp /opt/pxe-web/deploy/pxe-web.service /etc/systemd/system/
@@ -139,78 +142,78 @@ sudo systemctl restart pxe-web
 sudo systemctl status pxe-web
 ```
 ***
-ÔÚwebÀïÃæ¸ù¾İ×Ô¼ºµÄÏµÍ³Çé¿ö£¬ÔÚÏµÍ³ÉèÖÃÀïÃæĞŞ¸Ä¶ÔÓ¦dhcpÉèÖÃ
+åœ¨webé‡Œé¢æ ¹æ®è‡ªå·±çš„ç³»ç»Ÿæƒ…å†µï¼Œåœ¨ç³»ç»Ÿè®¾ç½®é‡Œé¢ä¿®æ”¹å¯¹åº”dhcpè®¾ç½®
 ***
 ---
 
-## »·¾³±äÁ¿£¨È«²¿¿ÉÑ¡£¬Ğ´ÔÚ service µÄ Environment Àï£©
+## ç¯å¢ƒå˜é‡ï¼ˆå…¨éƒ¨å¯é€‰ï¼Œå†™åœ¨ service çš„ Environment é‡Œï¼‰
 
-| ±äÁ¿ | Ä¬ÈÏÖµ | ËµÃ÷ |
+| å˜é‡ | é»˜è®¤å€¼ | è¯´æ˜ |
 |---|---|---|
-| `PXE_ADMIN_USER` / `PXE_ADMIN_PASS` | `admin` / `admin` | **ÉÏÏß±ØĞë¸ÄÃÜÂë** |
-| `PXE_SECRET_KEY` | ÄÚÖÃÄ¬ÈÏÖµ | ÁîÅÆÇ©ÃûÃÜÔ¿£¬½¨Òé¸Ä |
-| `PXE_HOSTS_DIR` | `/etc/dhcp/hosts` | ½ÚµãÓ³ÉäÎÄ¼şÄ¿Â¼£¨Ò»¸ö½ÚµãÒ»¸ö .conf£© |
-| `PXE_HOSTS_GLOB` | `/etc/dhcp/hosts/*.conf` | ¶ÁÈ¡¹æÔò |
-| `PXE_DHCPD_CONF` | `/etc/dhcp/dhcpd.conf` | Ğ£ÑéÓÃµÄÖ÷ÅäÖÃ |
-| `PXE_BOOT_IPXE` | `/var/lib/tftpboot/boot.ipxe` | ×Ô¶¯½âÎöÀïÃæµÄ `item` ×÷Îª¡¸½ÚµãÏµÍ³¡¹ÏÂÀ­Ïî |
-| `PXE_IMAGES_DIR` | `/var/www/html` | ¾µÏñ¸ùÄ¿Â¼£¨HTTP °²×°Ô´¸ù£© |
-| `PXE_AUTOINSTALL_DIR` | `autoinstall` | ¾µÏñÄ¿Â¼ÏÂ´æ·Å meta-data / user-data µÄ×ÓÄ¿Â¼Ãû |
-| `PXE_SSH_USER` / `PXE_SSH_PORT` | `root` / `22` | ÍøÒ³ÖÕ¶ËÄ¬ÈÏÕËºÅ¶Ë¿Ú |
-| `PXE_DRY_RUN` | `0` | ÉèÎª `1` Ê±Ö»Ğ´ÎÄ¼ş¡¢²»Ğ£Ñé²»ÖØÔØ£¨µ÷ÊÔÓÃ£© |
-| `PXE_VALIDATE_CMD` | `dhcpd -t -cf <conf>` | ×Ô¶¨ÒåĞ£ÑéÃüÁî |
-| `PXE_RELOAD_CMD` | `systemctl reload isc-dhcp-server` | ×Ô¶¨ÒåÖØÔØÃüÁî |
-| `PXE_BACKUP_DIR` | `/var/backups/pxe-web` | Ã¿´ÎĞ´»ØÇ°×Ô¶¯±¸·İ |
-| `PXE_LOG_FILE` | `/var/log/pxe-web/app.log` | Ó¦ÓÃÈÕÖ¾ÎÄ¼ş£¨¹ö¶¯£º5MB ¡Á 3£© |
-| `PXE_LOG_LEVEL` | `INFO` | ÈÕÖ¾¼¶±ğ£¨DEBUG/INFO/WARNING/ERROR£© |
-| `PXE_LOG_MAX_BYTES` | `5242880` | µ¥ÎÄ¼ş¹ö¶¯ãĞÖµ |
-| `PXE_LOG_BACKUPS` | `3` | ±£ÁôµÄÀúÊ·ÎÄ¼şÊı |
+| `PXE_ADMIN_USER` / `PXE_ADMIN_PASS` | `admin` / `admin` | **ä¸Šçº¿å¿…é¡»æ”¹å¯†ç ** |
+| `PXE_SECRET_KEY` | å†…ç½®é»˜è®¤å€¼ | ä»¤ç‰Œç­¾åå¯†é’¥ï¼Œå»ºè®®æ”¹ |
+| `PXE_HOSTS_DIR` | `/etc/dhcp/hosts` | èŠ‚ç‚¹æ˜ å°„æ–‡ä»¶ç›®å½•ï¼ˆä¸€ä¸ªèŠ‚ç‚¹ä¸€ä¸ª .confï¼‰ |
+| `PXE_HOSTS_GLOB` | `/etc/dhcp/hosts/*.conf` | è¯»å–è§„åˆ™ |
+| `PXE_DHCPD_CONF` | `/etc/dhcp/dhcpd.conf` | æ ¡éªŒç”¨çš„ä¸»é…ç½® |
+| `PXE_BOOT_IPXE` | `/var/lib/tftpboot/boot.ipxe` | è‡ªåŠ¨è§£æé‡Œé¢çš„ `item` ä½œä¸ºã€ŒèŠ‚ç‚¹ç³»ç»Ÿã€ä¸‹æ‹‰é¡¹ |
+| `PXE_IMAGES_DIR` | `/var/www/html` | é•œåƒæ ¹ç›®å½•ï¼ˆHTTP å®‰è£…æºæ ¹ï¼‰ |
+| `PXE_AUTOINSTALL_DIR` | `autoinstall` | é•œåƒç›®å½•ä¸‹å­˜æ”¾ meta-data / user-data çš„å­ç›®å½•å |
+| `PXE_SSH_USER` / `PXE_SSH_PORT` | `root` / `22` | ç½‘é¡µç»ˆç«¯é»˜è®¤è´¦å·ç«¯å£ |
+| `PXE_DRY_RUN` | `0` | è®¾ä¸º `1` æ—¶åªå†™æ–‡ä»¶ã€ä¸æ ¡éªŒä¸é‡è½½ï¼ˆè°ƒè¯•ç”¨ï¼‰ |
+| `PXE_VALIDATE_CMD` | `dhcpd -t -cf <conf>` | è‡ªå®šä¹‰æ ¡éªŒå‘½ä»¤ |
+| `PXE_RELOAD_CMD` | `systemctl reload isc-dhcp-server` | è‡ªå®šä¹‰é‡è½½å‘½ä»¤ |
+| `PXE_BACKUP_DIR` | `/var/backups/pxe-web` | æ¯æ¬¡å†™å›å‰è‡ªåŠ¨å¤‡ä»½ |
+| `PXE_LOG_FILE` | `/var/log/pxe-web/app.log` | åº”ç”¨æ—¥å¿—æ–‡ä»¶ï¼ˆæ»šåŠ¨ï¼š5MB Ã— 3ï¼‰ |
+| `PXE_LOG_LEVEL` | `INFO` | æ—¥å¿—çº§åˆ«ï¼ˆDEBUG/INFO/WARNING/ERRORï¼‰ |
+| `PXE_LOG_MAX_BYTES` | `5242880` | å•æ–‡ä»¶æ»šåŠ¨é˜ˆå€¼ |
+| `PXE_LOG_BACKUPS` | `3` | ä¿ç•™çš„å†å²æ–‡ä»¶æ•° |
 
-## ²é¿´ÈÕÖ¾
+## æŸ¥çœ‹æ—¥å¿—
 
-ÈıÖÖ·½Ê½£¬ÈÎÑ¡£º
+ä¸‰ç§æ–¹å¼ï¼Œä»»é€‰ï¼š
 
-**¢Ù systemd Ä£Ê½£¨ÍÆ¼ö£©**
+**â‘  systemd æ¨¡å¼ï¼ˆæ¨èï¼‰**
 
 ```bash
-journalctl -u pxe-web -f              # ÊµÊ±¸ú×Ù
+journalctl -u pxe-web -f              # å®æ—¶è·Ÿè¸ª
 journalctl -u pxe-web -n 200 --no-pager
 journalctl -u pxe-web --since today
 systemctl status pxe-web -n 50
 ```
 
-**¢Ú ÈÕÖ¾ÎÄ¼ş**
+**â‘¡ æ—¥å¿—æ–‡ä»¶**
 
 ```bash
 tail -f /var/log/pxe-web/app.log
-grep -i '¾µÏñ' /var/log/pxe-web/app.log
+grep -i 'é•œåƒ' /var/log/pxe-web/app.log
 ```
 
-**¢Û ÍøÒ³¶Ë**£º×ó²à¡¸ÔËĞĞÈÕÖ¾¡¹£¬Ä¬ÈÏÏÔÊ¾×î½ü 300 ĞĞ£¬¿É¿ª 5 Ãë×Ô¶¯Ë¢ĞÂ¡£
+**â‘¢ ç½‘é¡µç«¯**ï¼šå·¦ä¾§ã€Œè¿è¡Œæ—¥å¿—ã€ï¼Œé»˜è®¤æ˜¾ç¤ºæœ€è¿‘ 300 è¡Œï¼Œå¯å¼€ 5 ç§’è‡ªåŠ¨åˆ·æ–°ã€‚
 
-ÈÕÖ¾ÄÚÈİ°üº¬£ºÃ¿ÌõÇëÇó£¨·½·¨/Â·¾¶/×´Ì¬Âë/ºÄÊ±/À´Ô´ IP£©¡¢µÇÂ¼³É¹¦ÓëÊ§°Ü¡¢
-½Úµã±£´æÓëÉ¾³ı¡¢¾µÏñÉÏ´«¿ªÊ¼ÓëÃ¿¸öÎÄ¼şµÄÂäÅÌ´óĞ¡¡¢¾µÏñÉ¾³ı¡¢SSH Á¬½Ó³É¹¦ÓëÊ§°Ü¡£
+æ—¥å¿—å†…å®¹åŒ…å«ï¼šæ¯æ¡è¯·æ±‚ï¼ˆæ–¹æ³•/è·¯å¾„/çŠ¶æ€ç /è€—æ—¶/æ¥æº IPï¼‰ã€ç™»å½•æˆåŠŸä¸å¤±è´¥ã€
+èŠ‚ç‚¹ä¿å­˜ä¸åˆ é™¤ã€é•œåƒä¸Šä¼ å¼€å§‹ä¸æ¯ä¸ªæ–‡ä»¶çš„è½ç›˜å¤§å°ã€é•œåƒåˆ é™¤ã€SSH è¿æ¥æˆåŠŸä¸å¤±è´¥ã€‚
 
-## ³£¼ûÎÊÌâ
+## å¸¸è§é—®é¢˜
 
-**±£´æ³É¹¦µ«ÌáÊ¾¡°ÖØÔØÊ§°Ü¡±**
+**ä¿å­˜æˆåŠŸä½†æç¤ºâ€œé‡è½½å¤±è´¥â€**
 
-Debian/Ubuntu µÄ `isc-dhcp-server.service` Í¨³£Ã»ÓĞ¶¨Òå `ExecReload`£¬systemd »áÖ±½Ó±¨
-`Job type reload is not applicable for unit isc-dhcp-server.service`¡£
-ÅäÖÃÆäÊµ**ÒÑ¾­Ğ´½øÎÄ¼şÁË**£¬Ö»ÊÇ×îºóÒ»²½Í¨Öª·şÎñÊ§°Ü¡£½â¾ö°ì·¨ÊÇ°ÑÖØÔØÃüÁî¸Ä³É restart£º
+Debian/Ubuntu çš„ `isc-dhcp-server.service` é€šå¸¸æ²¡æœ‰å®šä¹‰ `ExecReload`ï¼Œsystemd ä¼šç›´æ¥æŠ¥
+`Job type reload is not applicable for unit isc-dhcp-server.service`ã€‚
+é…ç½®å…¶å®**å·²ç»å†™è¿›æ–‡ä»¶äº†**ï¼Œåªæ˜¯æœ€åä¸€æ­¥é€šçŸ¥æœåŠ¡å¤±è´¥ã€‚è§£å†³åŠæ³•æ˜¯æŠŠé‡è½½å‘½ä»¤æ”¹æˆ restartï¼š
 
 ```conf
 Environment="PXE_RELOAD_CMD=systemctl restart isc-dhcp-server"
 ```
 
-³ÌĞò×Ô´ø»ØÍËÁ´£ºÖ÷ÃüÁîÊ§°Üºó»áÒÀ´Î³¢ÊÔ
-`systemctl restart isc-dhcp-server` ¡ú `service isc-dhcp-server restart` ¡ú `systemctl restart dhcpd`
-¡ú `service dhcpd restart`£¬ÈÎÒ»³É¹¦¼´ÊÓÎª³É¹¦£¬½çÃæÉÏ»áµ¯³öÍêÕû³¢ÊÔ¼ÇÂ¼¡£
-`restart` »á´øÀ´ 1~2 Ãë DHCP ÖĞ¶Ï£»ÈôÍêÈ«²»ÄÜÖĞ¶Ï£¬Ğè¸ÄÓÃ OMAPI£¨omshell£©¶¯Ì¬ÏÂ·¢¡£
+ç¨‹åºè‡ªå¸¦å›é€€é“¾ï¼šä¸»å‘½ä»¤å¤±è´¥åä¼šä¾æ¬¡å°è¯•
+`systemctl restart isc-dhcp-server` â†’ `service isc-dhcp-server restart` â†’ `systemctl restart dhcpd`
+â†’ `service dhcpd restart`ï¼Œä»»ä¸€æˆåŠŸå³è§†ä¸ºæˆåŠŸï¼Œç•Œé¢ä¸Šä¼šå¼¹å‡ºå®Œæ•´å°è¯•è®°å½•ã€‚
+`restart` ä¼šå¸¦æ¥ 1~2 ç§’ DHCP ä¸­æ–­ï¼›è‹¥å®Œå…¨ä¸èƒ½ä¸­æ–­ï¼Œéœ€æ”¹ç”¨ OMAPIï¼ˆomshellï¼‰åŠ¨æ€ä¸‹å‘ã€‚
 
-## ×¢ÒâÊÂÏî
+## æ³¨æ„äº‹é¡¹
 
-- ·şÎñĞèÒª **root** È¨ÏŞ£¨¶Á /etc/dhcp¡¢reload/restart dhcpd£©¡£
-- Ubuntu ÈôÌáÊ¾ `Permission denied` ¶Á²»µ½ `/etc/dhcp/hosts/*`£¬ÔÚ
-  `/etc/apparmor.d/usr.sbin.dhcpd` ¼ÓÒ»ĞĞ `/etc/dhcp/hosts/** r,` ÔÙ `systemctl reload apparmor`¡£
-- ÍøÒ³ SSH ×ß WebSocket£¬·´Ïò´úÀíĞèÒª·ÅĞĞ `Upgrade` Í·¡£
-- Ä¬ÈÏ¿ÚÁî admin/admin ½öÓÃÓÚÄÚÍøµ÷ÊÔ£¬Éú²ú»·¾³Îñ±ØÍ¨¹ı `PXE_ADMIN_PASS` ĞŞ¸Ä¡£
+- æœåŠ¡éœ€è¦ **root** æƒé™ï¼ˆè¯» /etc/dhcpã€reload/restart dhcpdï¼‰ã€‚
+- Ubuntu è‹¥æç¤º `Permission denied` è¯»ä¸åˆ° `/etc/dhcp/hosts/*`ï¼Œåœ¨
+  `/etc/apparmor.d/usr.sbin.dhcpd` åŠ ä¸€è¡Œ `/etc/dhcp/hosts/** r,` å† `systemctl reload apparmor`ã€‚
+- ç½‘é¡µ SSH èµ° WebSocketï¼Œåå‘ä»£ç†éœ€è¦æ”¾è¡Œ `Upgrade` å¤´ã€‚
+- é»˜è®¤å£ä»¤ admin/admin ä»…ç”¨äºå†…ç½‘è°ƒè¯•ï¼Œç”Ÿäº§ç¯å¢ƒåŠ¡å¿…é€šè¿‡ `PXE_ADMIN_PASS` ä¿®æ”¹ã€‚
