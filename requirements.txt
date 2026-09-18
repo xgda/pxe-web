@@ -1,0 +1,7 @@
+fastapi>=0.110
+# 用纯 Python 版 uvicorn：[standard] 里的 uvloop/httptools/watchfiles 需要
+# Rust/GCC 编译链，Docker 镜像里为它们装 build-essential 会胖 200MB+，
+# 对我们这种内网管理平台的并发量完全没必要。想压榨性能可自行改回。
+uvicorn>=0.27
+paramiko>=3.4
+python-multipart>=0.0.9

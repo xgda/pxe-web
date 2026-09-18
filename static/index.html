@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PXE 装机管理平台</title>
+  <!-- 前端库一律走本地 /static/vendor：
+       PXE 服务器常在隔离网，走 CDN 会一直卡到超时，页面要好几秒才出来。
+       本地取不到时才 onerror 回退 CDN（document.write 保证加载顺序不变）。 -->
+  <link rel="stylesheet" href="/static/vendor/element-plus.index.css?v=1.8.4" />
+  <link rel="stylesheet" href="/static/vendor/xterm.css?v=1.8.4" />
+  <link rel="stylesheet" href="/static/style.css?v=1.8.4" />
+</head>
+<body>
+  <div id="app">
+    <div class="boot-loading">正在加载管理控制台…</div>
+  </div>
+
+  <script>
+    function cdnCss(u) { document.write('<link rel="stylesheet" href="' + u + '">'); }
+    function cdnJs(u) { document.write('<scr' + 'ipt src="' + u + '"></scr' + 'ipt>'); }
+  </script>
+
+  <script src="/static/vendor/vue.global.prod.js?v=1.8.4"
+          onerror="cdnJs('https://unpkg.com/vue@3/dist/vue.global.prod.js')"></script>
+  <script src="/static/vendor/element-plus.index.full.min.js?v=1.8.4"
+          onerror="cdnJs('https://unpkg.com/element-plus@2/dist/index.full.min.js')"></script>
+  <script src="/static/vendor/xterm.js?v=1.8.4"
+          onerror="cdnJs('https://cdn.jsdelivr.net/npm/@xterm/xterm@5/lib/xterm.js')"></script>
+  <script src="/static/vendor/addon-fit.js?v=1.8.4"
+          onerror="cdnJs('https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10/lib/addon-fit.js')"></script>
+  <script src="/static/app.js?v=1.8.4"></script>
+</body>
+</html>

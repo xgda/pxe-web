@@ -1,0 +1,440 @@
+:root {
+  --pxe-sidebar: #1f2937;
+  --pxe-sidebar-active: #2563eb;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: #f2f4f7;
+  color: #1f2937;
+}
+
+.boot-loading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ---------- 登录 ---------- */
+.login-wrap {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 20% 20%, #1e3a8a 0%, #0f172a 55%, #020617 100%);
+}
+
+.login-card {
+  width: 380px;
+  padding: 24px 30px 26px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(2, 6, 23, .45);
+}
+
+/* 登录页顶部的团队插画（PNG 透明底） */
+.login-mascot {
+  display: block;
+  width: 200px;
+  max-width: 80%;
+  height: auto;
+  margin: 0 auto 6px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.login-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.login-sub {
+  text-align: center;
+  color: #909399;
+  font-size: 12px;
+  margin-bottom: 24px;
+}
+
+.login-tip {
+  margin-top: 14px;
+  font-size: 12px;
+  color: #909399;
+  text-align: center;
+}
+
+/* ---------- 布局 ---------- */
+.layout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  height: 56px;
+  background: var(--pxe-sidebar);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  justify-content: space-between;
+  flex: none;
+}
+
+.header .logo {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+.header .right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 200px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  overflow-y: auto;
+}
+
+.sidebar .el-menu { border-right: none; flex: none; }
+
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 16px;
+  overflow: auto;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 100%;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .06);
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.settings-note {
+  font-size: 12px;
+  color: #909399;
+  margin: 0 0 12px;
+}
+
+.text-mono {
+  font-family: Consolas, Menlo, "Courier New", monospace;
+  font-size: 12px;
+}
+
+.placeholder-box {
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+/* 添加镜像对话框底部的说明文字 */
+.upload-note {
+  color: #909399;
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: #fafbfc;
+  border-left: 3px solid #dcdfe6;
+  border-radius: 0 4px 4px 0;
+}
+
+.upload-note b { color: #606266; }
+
+/* ---------- 镜像启动配置编辑 ---------- */
+.menu-head {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 6px 10px;
+  color: #374151;
+  font-size: 13px;
+}
+
+.menu-editor .el-textarea__inner {
+  font-family: Consolas, Menlo, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ---------- 部署任务 ---------- */
+.task-form {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: #fafbfc;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.form-row + .form-row { margin-top: 10px; }
+
+.form-label {
+  display: inline-block;
+  width: 76px;
+  flex: none;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.node-picker {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 10px 14px 12px;
+  margin-bottom: 16px;
+}
+
+.picker-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.node-item {
+  display: inline-flex;
+  align-items: center;
+  min-width: 340px;
+  margin: 0 16px 6px 0;
+}
+
+.node-name { font-weight: 600; margin-right: 8px; }
+
+.node-ip { color: #6b7280; margin-right: 6px; }
+
+/* ---------- 日志 ---------- */
+.log-box {
+  background: #0f172a;
+  color: #a5d6a7;
+  font-family: Consolas, Menlo, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 12px;
+  border-radius: 6px;
+  height: calc(100vh - 230px);
+  overflow: auto;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ---------- 登录欢迎框 ---------- */
+.welcome-box {
+  width: 580px;
+  max-width: 92vw;
+  border-radius: 14px;
+}
+
+.welcome-box .el-message-box__header { padding-top: 20px; }
+
+.welcome-box .el-message-box__title { font-size: 17px; }
+
+.welcome-box .el-message-box__content { padding: 8px 24px 18px; }
+
+.welcome-box .el-message-box__btns {
+  padding-bottom: 16px;
+  /* 确认按钮居中，默认靠右看着别扭 */
+  justify-content: center;
+}
+
+/* 标题行：emoji 和文字同排，不再让图标单独占一行 */
+.welcome-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.welcome-hero-icon { font-size: 24px; line-height: 1; }
+
+.welcome-hero-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #409eff;
+}
+
+.welcome-desc {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 13px;
+  color: #606266;
+}
+
+/* 列表：图标固定宽度，文字统一左对齐，避免 emoji 撑得参差不齐 */
+.welcome-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  border-top: 1px solid #ebeef5;
+}
+
+.welcome-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 4px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #606266;
+  border-bottom: 1px solid #f2f4f7;
+}
+
+.welcome-list li:last-child { border-bottom: none; }
+
+.welcome-list li i {
+  font-style: normal;
+  flex: none;
+  width: 20px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.welcome-tip {
+  margin-top: 14px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  background: #f4f6f9;
+  font-size: 12px;
+  color: #909399;
+  line-height: 1.7;
+}
+
+/* ---------- 多行提示框 ---------- */
+/* ElMessageBox / ElMessage 默认会把文案里的 \n 折叠成空格，整段挤成一行 */
+.msg-pre .el-message-box__message {
+  white-space: pre-line;
+  line-height: 1.8;
+}
+
+.msg-pre .el-message-box__message p { margin: 0; }
+
+.el-message__content {
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+/* ---------- 终端 ---------- */
+.term-wrap {
+  background: #000;
+  height: 460px;
+  padding: 6px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.term-wrap .xterm { height: 100%; }
+
+/* ---------- 侧栏底部的服务状态（嵌在功能列表最下面，非弹窗） ---------- */
+.svc-dock {
+  margin-top: auto;
+  padding: 9px 12px 10px;
+  border-top: 1px solid #f0f2f5;
+  background: #fafbfd;
+  font-size: 12px;
+  color: #303133;
+  user-select: none;
+}
+
+.svc-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 0;
+}
+
+.svc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.svc-dot.on {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, .16);
+}
+
+.svc-dot.off {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, .16);
+}
+
+.svc-name {
+  font-family: Consolas, Menlo, "Courier New", monospace;
+  font-size: 11px;
+  color: #606266;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.svc-state {
+  margin-left: auto;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.svc-state.ok {
+  color: #1f9d55;
+  font-family: Consolas, Menlo, "Courier New", monospace;
+}
+
+.svc-state.bad {
+  color: #dc2626;
+  font-family: Consolas, Menlo, "Courier New", monospace;
+}

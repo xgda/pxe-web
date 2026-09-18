@@ -1,0 +1,39 @@
+[Unit]
+Description=PXE Web Console
+After=network.target isc-dhcp-server.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/pxe-web
+Environment="PXE_ADMIN_USER=admin"
+Environment="PXE_ADMIN_PASS=admin"
+Environment="PXE_SECRET_KEY=please-change-this-secret"
+Environment="PXE_HOSTS_DIR=/etc/dhcp/hosts"
+Environment="PXE_DHCPD_CONF=/etc/dhcp/dhcpd.conf"
+Environment="PXE_BACKUP_DIR=/var/backups/pxe-web"
+# v1.9.0 起默认路径就是项目下的 tftpboot/ 与 var/www/html/，
+# 这里显式写一遍，方便你按实际部署改成 /var/lib/tftpboot、/var/www/html
+Environment="PXE_BOOT_IPXE=/opt/pxe-web/tftpboot/boot.ipxe"
+Environment="PXE_GRUB_CFG=/opt/pxe-web/tftpboot/grub.cfg"
+Environment="PXE_WWW_ROOT=/opt/pxe-web/var/www/html"
+Environment="PXE_IMAGES_DIR=/opt/pxe-web/var/www/html"
+# 内置内核（UKI）目录布局（v1.9.1 起 UKI 在顶层：<www>/UKI/<架构>/<类型>）
+Environment="PXE_UKI_LAYOUT={www}/UKI/{arch}"
+# UKI 类型在菜单里的 URL 路径模板
+Environment="PXE_UKI_URL_PATH_TPL=UKI/{arch}/{name}"
+# 节点状态探测缓存秒数（0 = 每次实时探测）
+Environment="PXE_PROBE_CACHE_TTL=20"
+# 侧栏服务状态：dbus 事件订阅（systemd 一变就推）+ 巡检兜底双保险。
+# 这个值控制巡检间隔；事件模式正常时它也跑，只是状态没变就不推，页面上无感
+Environment="PXE_SERVICE_RECHECK=15"
+# 盯哪几个服务（逗号分隔）
+Environment="PXE_WATCH_SERVICES=nginx,isc-dhcp-server,tftpd-hpa"
+# Debian/Ubuntu 的 isc-dhcp-server.service 多数没有 ExecReload，用 restart 而不是 reload
+Environment="PXE_RELOAD_CMD=systemctl restart isc-dhcp-server"
+ExecStart=/opt/pxe-web/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
